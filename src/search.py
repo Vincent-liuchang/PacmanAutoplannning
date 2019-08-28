@@ -61,6 +61,7 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
+
 def tinyMazeSearch(problem):
     """
     Returns a sequence of moves that solves tinyMaze.  For any other maze, the
@@ -70,6 +71,7 @@ def tinyMazeSearch(problem):
     s = Directions.SOUTH
     w = Directions.WEST
     return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -92,79 +94,79 @@ def depthFirstSearch(problem):
     # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     # print("problem here", vars(problem))
 
-    current_node = (problem.getStartState(),'',0)
+    current_node = (problem.getStartState(), [], 0)
     next_node = util.Stack()
-    _visitedlist = [current_node[0]]
+    visited_list = [current_node[0]]
 
     while not problem.isGoalState(current_node[0]):
+
         for successor in problem.getSuccessors(current_node[0]):
-            if not _visitedlist.__contains__(successor[0]):
-                next_node.push((successor[0],current_node[1]+successor[1]+' ',current_node[2]+successor[2]))
-        if next_node.list.__len__() == 0:
-            break
+            next_node.push((successor[0], current_node[1]+[successor[1]], current_node[2]+successor[2]))
+
+        if len(next_node.list) == 0:
+            return None
         current_node = next_node.pop()
 
-        while _visitedlist.__contains__(current_node[0]):
-            if next_node.list.__len__() == 0:
-                break
+        while current_node[0] in visited_list:
+            if len(next_node.list) == 0:
+                return None
             current_node = next_node.pop()
-        _visitedlist.append(current_node[0])
-    result = current_node[1].split(' ')
-    result.pop()
-    return result;
+        visited_list.append(current_node[0])
+    result = current_node[1]
+    return result
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE IF YOU WANT TO PRACTICE ***"
 
-    current_node = (problem.getStartState(), '', 0)
+    current_node = (problem.getStartState(), [], 0)
     next_node = util.Queue()
-    _visitedlist = [current_node[0]]
+    visited_list = [current_node[0]]
 
     while not problem.isGoalState(current_node[0]):
+
         for successor in problem.getSuccessors(current_node[0]):
-            if not _visitedlist.__contains__(successor[0]):
-                next_node.push((successor[0], current_node[1] + successor[1] + ' ', current_node[2] + successor[2]))
-        if next_node.list.__len__() == 0:
-            break
+            next_node.push((successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2]))
+
+        if len(next_node.list) == 0:
+            return None
         current_node = next_node.pop()
 
-        while _visitedlist.__contains__(current_node[0]):
-            if next_node.list.__len__() == 0:
-                break
+        while current_node[0] in visited_list:
+            if len(next_node.list) == 0:
+                return None
             current_node = next_node.pop()
-        _visitedlist.append(current_node[0])
-
-    result = current_node[1].split(' ')
-    result.pop()
-    return result;
+        visited_list.append(current_node[0])
+    result = current_node[1]
+    return result
 
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE IF YOU WANT TO PRACTICE ***"
-    current_node = (problem.getStartState(), '', 0)
+    current_node = (problem.getStartState(), [], 0)
     next_node = util.PriorityQueue()
-    _visitedlist = [current_node[0]]
+    visited_list = [current_node[0]]
 
     while not problem.isGoalState(current_node[0]):
-        for successor in problem.getSuccessors(current_node[0]):
-            # if not _visitedlist.__contains__(successor[0]):
-                next_node.push((successor[0], current_node[1] + successor[1] + ' ', current_node[2] + successor[2]),current_node[2] + successor[2])
 
-        if next_node.heap.__len__() == 0:
-            break
+        for successor in problem.getSuccessors(current_node[0]):
+            next_node.push((successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2]), current_node[2] + successor[2])
+
+        if len(next_node.heap) == 0:
+            return None
         current_node = next_node.pop()
 
-        while _visitedlist.__contains__(current_node[0]):
-            if next_node.heap.__len__() == 0:
-                break
+        while current_node[0] in visited_list:
+            if len(next_node.heap) == 0:
+                return None
             current_node = next_node.pop()
-        _visitedlist.append(current_node[0])
+        visited_list.append(current_node[0])
 
-    result = current_node[1].split(' ')
-    result.pop()
+    result = current_node[1]
     return result
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -173,99 +175,105 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE IF YOU WANT TO PRACTICE ***"
-    current_node = (problem.getStartState(), '', 0)
+    current_node = (problem.getStartState(), [], 0)
     next_node = util.PriorityQueue()
-    _visitedlist = [current_node[0]]
+    visited_list = [current_node[0]]
 
     while not problem.isGoalState(current_node[0]):
-        for successor in problem.getSuccessors(current_node[0]):
-            # if not _visitedlist.__contains__(successor[0]):
-                next_node.push((successor[0], current_node[1] + successor[1] + ' ', current_node[2] + successor[2]),
-                               current_node[2] + successor[2] + heuristic(successor[0],problem))
 
-        if next_node.heap.__len__() == 0:
-            break
+        for successor in problem.getSuccessors(current_node[0]):
+            next_node.push((successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2]),
+                           current_node[2] + successor[2] + heuristic(successor[0], problem))
+
+        if len(next_node.heap) == 0:
+            return None
         current_node = next_node.pop()
 
-        while _visitedlist.__contains__(current_node[0]):
-            if next_node.heap.__len__() == 0:
-                break
+        while current_node[0] in visited_list:
+            if len(next_node.heap) == 0:
+                return None
             current_node = next_node.pop()
-        _visitedlist.append(current_node[0])
+        visited_list.append(current_node[0])
 
-    result = current_node[1].split(' ')
-    result.pop()
+    result = current_node[1]
     return result
+
 
 def checkCircle(currend_node,next_node,problem):
     for node in next_node:
-        if (currend_node[0][0] == node[0][0]) & (currend_node[0][1] == node[0][1])& (not currend_node[0] == problem.getStartState()):
+        if (currend_node[0][0] == node[0][0]) & (currend_node[0][1] == node[0][1]) & (not currend_node[0] == problem.getStartState()):
             return True
     return False
+
 
 def iterativeDeepeningSearch(problem):
     """Search the deepest node in an iterative manner."""
     "*** YOUR CODE HERE FOR TASK 1 ***"
-    current_node = (problem.getStartState(), '', 0, 0)
+
+    current_node = (problem.getStartState(), [], 0, 0)
     next_node = util.Stack()
-    next_node.push(current_node)
-    _visitedlist = [current_node[0]]
-    deepdegree = 1
+    deep_degree = 0
 
     while not problem.isGoalState(current_node[0]):
-        deepdegree += 1
-        current_node = (problem.getStartState(), '', 0,0)  # (state, action, cost, layer)
+        deep_degree += 1
+        current_node = (problem.getStartState(),[], 0, 0)  # (state, action, cost, layer)
+        visited_list = [current_node[0]]
         next_node.push(current_node)
-        _visitedlist = [current_node[0]]
 
-        while (not next_node.list.__len__() == 0) & (not problem.isGoalState(current_node[0])):
+        while (not problem.isGoalState(current_node[0])) & (not len(next_node.list) == 0):
+
             for successor in problem.getSuccessors(current_node[0]):
-                if (not checkCircle(successor,next_node.list,problem)) & (not current_node[3] + 1 > deepdegree):
-                    next_node.push((successor[0], current_node[1] + successor[1] + ' ', current_node[2] + successor[2],current_node[3]+1))
-            if next_node.list.__len__() == 0:
+                if (not checkCircle(successor, next_node.list, problem)) & (not current_node[3] + 1 > deep_degree):
+                    next_node.push((successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2],
+                                    current_node[2] + successor[2], current_node[3]+1))
+            if len(next_node.list) == 0:
                 break
             current_node = next_node.pop()
-            while _visitedlist.__contains__(current_node[0]):
-                if next_node.list.__len__() == 0:
+
+            while current_node[0] in visited_list:
+                if len(next_node.list) == 0:
                     break
                 current_node = next_node.pop()
-            if not _visitedlist.__contains__(current_node[0]):
-                _visitedlist.append(current_node[0])
+            if current_node not in visited_list:
+                visited_list.append(current_node[0])
 
-    result = current_node[1].split(' ')
-    result.pop()
+    result = current_node[1]
     return result
+
 
 def waStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has has the weighted (x 2) lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE FOR TASK 2 ***"
 
-    W = 2
-    current_node = (problem.getStartState(), '', 0)
+    w = 2
+    current_node = (problem.getStartState(), [], 0, w * heuristic(problem.getStartState(), problem))
+    # (state, action, g(n), f(n))
     next_node = util.PriorityQueue()
-    _visitedlist = [current_node[0]]
+    visited_list = {current_node[0]: (problem.getStartState(), [], 0, w * heuristic(problem.getStartState(), problem))}
 
     while not problem.isGoalState(current_node[0]):
         for successor in problem.getSuccessors(current_node[0]):
-            # if not _visitedlist.__contains__(successor[0]):
-            next_node.push((successor[0], current_node[1] + successor[1] + ' ', current_node[2] + successor[2]),
-                           current_node[2] + successor[2] + W * heuristic(successor[0], problem))
-
-        if next_node.heap.__len__() == 0:
-            break
+            next_node.push((successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2],
+                            current_node[2] + successor[2] + heuristic(successor[0], problem)),
+                           current_node[2] + successor[2] + heuristic(successor[0], problem))
+        if len(next_node.heap) == 0:
+            return None
         current_node = next_node.pop()
 
-        while _visitedlist.__contains__(current_node[0]):
-            if next_node.heap.__len__() == 0:
+        while current_node[0] in visited_list:
+            if len(next_node.heap) == 0:
+                return None
+            if current_node[3] < visited_list[current_node[0]][3]:
                 break
             current_node = next_node.pop()
-        _visitedlist.append(current_node[0])
+        visited_list[current_node[0]] = current_node
 
-    result = current_node[1].split(' ')
-    result.pop()
+    result = current_node[1]
+    print(problem.count)
     return result
 
 

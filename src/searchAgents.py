@@ -336,6 +336,8 @@ class CapsuleSearchProblem:
         self.heuristicInfo = {} # A dictionary for the heuristic to store information
         self._capsuleEaten = False
         self.capsule = startingGameState.getCapsules()[0]
+        self.count = {}
+
 
 
     def getStartState(self):
@@ -345,6 +347,10 @@ class CapsuleSearchProblem:
         return state[1].count() == 0
 
     def getSuccessors(self, state):
+        if state[0] not in self.count:
+            self.count[state[0]] = 0
+        self.count[state[0]] += 1
+
         if state[0] == self.capsule:
             self._capsuleEaten = True
 
@@ -423,31 +429,23 @@ def foodHeuristic(state, problem):
     capsule = problem.capsule
     capsuleEaten = problem._capsuleEaten
     allDistance =[]
-    count = 0
+    sum = 0
 
     if capsuleEaten:
-        # print('capsule',capsule)
-        # print(state[0])
-        # print(allDistance)
-
         for i in range(0, foodGrid.width):
             for j in range(foodGrid.height):
                 if foodGrid[i][j]:
-                    count += 1
                     allDistance.append(abs(position[0] - i) + abs(position[1] - j))
-
-        if allDistance.__len__() == 0:
+                    sum += abs(position[0] - i) + abs(position[1] - j)
+        if len(allDistance) == 0:
             result = 0
         else:
             result = max(allDistance)
     else:
-        # print('capsule', capsule)
-        # print(state[0])
-        if allDistance.__len__() == 0:
-            result = 0
-        else:
-            result = abs(position[0]-capsule[0]) + abs(position[1]-capsule[1])
-    return result * 1.5
+        result = abs(position[0]-capsule[0]) + abs(position[1]-capsule[1])
+        result += 99999999999999
+    return result * 3
+
 
 class CornersProblem(search.SearchProblem):
     """
