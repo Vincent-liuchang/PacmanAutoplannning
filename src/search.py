@@ -281,6 +281,38 @@ def waStarSearch(problem, heuristic=nullHeuristic):
     # print(problem.count)
     return result
 
+# def waStarSearch(problem, heuristic=nullHeuristic):
+#     """Search the node that has has the weighted (x 2) lowest combined cost and heuristic first."""
+#     "*** YOUR CODE HERE FOR TASK 2 ***"
+#
+#     w = 2
+#     current_node = (problem.getStartState(), [], 0, w * heuristic(problem.getStartState(), problem))
+#     # (state, action, g(n), f(n))
+#     open_list = util.PriorityQueue()
+#     visited_list = {current_node[0]: (problem.getStartState(), [], 0, w * heuristic(problem.getStartState(), problem))}
+#
+#     while not problem.isGoalState(current_node[0]):
+#         for successor in problem.getSuccessors(current_node[0]):
+#             open_list.push((successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2],
+#                                        current_node[2] + successor[2] + heuristic(successor[0], problem)),
+#                             current_node[2] + successor[2] + heuristic(successor[0], problem))
+#
+#         if len(open_list.heap) == 0:
+#             return None
+#         current_node = open_list.pop()
+#
+#         while current_node[0] in visited_list:
+#             if len(open_list.heap) == 0:
+#                 return None
+#             if current_node[2] < visited_list[current_node[0]][2]:
+#                 break
+#             current_node = open_list.pop()
+#         visited_list[current_node[0]] = current_node
+#
+#     result = current_node[1]
+#     # print(problem.count)
+#     return result
+
 
 # Abbreviations
 bfs = breadthFirstSearch

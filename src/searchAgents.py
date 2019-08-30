@@ -329,7 +329,7 @@ class CapsuleSearchProblem:
     vincent
     """
     def __init__(self, startingGameState):
-        self.start = (startingGameState.getPacmanPosition(), startingGameState.getFood())
+        self.start = (startingGameState.getPacmanPosition(), startingGameState.getFood(), False)
         self.walls = startingGameState.getWalls()
         self.startingGameState = startingGameState
         self._expanded = 0 # DO NOT CHANGE
@@ -350,11 +350,11 @@ class CapsuleSearchProblem:
         # if state[0] not in self.count:
         #     self.count[state[0]] = 0
         # self.count[state[0]] += 1
-
+        capsuleEaten = state[2]
         if state[0] == self.capsule:
-            self._capsuleEaten = True
+            capsuleEaten = True
 
-        if self._capsuleEaten:
+        if capsuleEaten:
             "Returns successor states, the actions they require, and a cost of 1."
             successors = []
             self._expanded += 1  # DO NOT CHANGE
@@ -365,7 +365,7 @@ class CapsuleSearchProblem:
                 if not self.walls[nextx][nexty]:
                     nextFood = state[1].copy()
                     nextFood[nextx][nexty] = False
-                    successors.append((((nextx, nexty), nextFood), direction, 1))
+                    successors.append((((nextx, nexty), nextFood, capsuleEaten), direction, 1,))
             return successors
         else:
             "Returns successor states, the actions they require, and a cost of 1."
@@ -378,7 +378,7 @@ class CapsuleSearchProblem:
                 if not (self.walls[nextx][nexty] | state[1][nextx][nexty]):
                     nextFood = state[1].copy()
                     nextFood[nextx][nexty] = False
-                    successors.append((((nextx, nexty), nextFood), direction, 1))
+                    successors.append((((nextx, nexty), nextFood, capsuleEaten), direction, 1))
             return successors
 
     def getCostOfActions(self, actions):
@@ -425,10 +425,10 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     "*** YOUR CODE HERE ***"
-    position, foodGrid = state
+    position, foodGrid, capsuleEaten = state
     capsule = problem.capsule
-    capsuleEaten = problem._capsuleEaten
-    allDistance =[]
+    # capsuleEaten = problem._capsuleEaten
+    allDistance = []
     sum = 0
 
     if capsuleEaten:
