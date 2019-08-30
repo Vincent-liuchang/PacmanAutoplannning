@@ -347,9 +347,9 @@ class CapsuleSearchProblem:
         return state[1].count() == 0
 
     def getSuccessors(self, state):
-        if state[0] not in self.count:
-            self.count[state[0]] = 0
-        self.count[state[0]] += 1
+        # if state[0] not in self.count:
+        #     self.count[state[0]] = 0
+        # self.count[state[0]] += 1
 
         if state[0] == self.capsule:
             self._capsuleEaten = True
@@ -443,8 +443,8 @@ def foodHeuristic(state, problem):
             result = max(allDistance)
     else:
         result = abs(position[0]-capsule[0]) + abs(position[1]-capsule[1])
-        result += 99999999999999
-    return result * 3
+        result += 9999
+    return result
 
 
 class CornersProblem(search.SearchProblem):

@@ -179,14 +179,15 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE IF YOU WANT TO PRACTICE ***"
-    current_node = (problem.getStartState(), [], 0)
+    current_node = (problem.getStartState(), [], 0, 0)
     next_node = util.PriorityQueue()
-    visited_list = [current_node[0]]
+    visited_list = {current_node[0]: (problem.getStartState(), [], 0, heuristic(problem.getStartState(), problem))}
 
     while not problem.isGoalState(current_node[0]):
 
         for successor in problem.getSuccessors(current_node[0]):
-            next_node.push((successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2]),
+            next_node.push((successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2],
+                            heuristic(problem.getStartState(), problem)),
                            current_node[2] + successor[2] + heuristic(successor[0], problem))
 
         if len(next_node.heap) == 0:
@@ -196,8 +197,10 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         while current_node[0] in visited_list:
             if len(next_node.heap) == 0:
                 return None
+            if current_node[2] < visited_list[current_node[0]][2]:
+                break
             current_node = next_node.pop()
-        visited_list.append(current_node[0])
+        visited_list[current_node[0]] = current_node
 
     result = current_node[1]
     return result
@@ -219,16 +222,15 @@ def iterativeDeepeningSearch(problem):
     deep_degree = 0
 
     while not problem.isGoalState(current_node[0]):
-        deep_degree += 1
-        current_node = (problem.getStartState(),[], 0, 0)  # (state, action, cost, layer)
+        current_node = (problem.getStartState(), [], 0, 0)  # (state, action, cost, layer)
         visited_list = [current_node[0]]
         next_node.push(current_node)
 
         while (not problem.isGoalState(current_node[0])) & (not len(next_node.list) == 0):
 
             for successor in problem.getSuccessors(current_node[0]):
-                if (not checkCircle(successor, next_node.list, problem)) & (not current_node[3] + 1 > deep_degree):
-                    next_node.push((successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2],
+                if current_node[3] < deep_degree:
+                    next_node.push((successor[0], current_node[1] + [successor[1]],
                                     current_node[2] + successor[2], current_node[3]+1))
             if len(next_node.list) == 0:
                 break
@@ -241,6 +243,7 @@ def iterativeDeepeningSearch(problem):
             if current_node not in visited_list:
                 visited_list.append(current_node[0])
 
+        deep_degree += 1
     result = current_node[1]
     return result
 
@@ -252,28 +255,30 @@ def waStarSearch(problem, heuristic=nullHeuristic):
     w = 2
     current_node = (problem.getStartState(), [], 0, w * heuristic(problem.getStartState(), problem))
     # (state, action, g(n), f(n))
-    next_node = util.PriorityQueue()
+    open_list = util.PriorityQueue()
     visited_list = {current_node[0]: (problem.getStartState(), [], 0, w * heuristic(problem.getStartState(), problem))}
+    nect_node = {}
 
     while not problem.isGoalState(current_node[0]):
         for successor in problem.getSuccessors(current_node[0]):
-            next_node.push((successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2],
-                            current_node[2] + successor[2] + heuristic(successor[0], problem)),
-                           current_node[2] + successor[2] + heuristic(successor[0], problem))
-        if len(next_node.heap) == 0:
+            open_list.update(successor[0][0], current_node[2] + successor[2] + heuristic(successor[0], problem))
+            nect_node[successor[0][0]] = (successor[0], current_node[1] + [successor[1]], current_node[2] + successor[2],
+                                       current_node[2] + successor[2] + heuristic(successor[0], problem))
+
+        if len(open_list.heap) == 0:
             return None
-        current_node = next_node.pop()
+        current_node = nect_node[open_list.pop()]
 
         while current_node[0] in visited_list:
-            if len(next_node.heap) == 0:
+            if len(open_list.heap) == 0:
                 return None
-            if current_node[3] < visited_list[current_node[0]][3]:
+            if current_node[2] < visited_list[current_node[0]][2]:
                 break
-            current_node = next_node.pop()
+            current_node = nect_node[open_list.pop()]
         visited_list[current_node[0]] = current_node
 
     result = current_node[1]
-    print(problem.count)
+    # print(problem.count)
     return result
 
 
